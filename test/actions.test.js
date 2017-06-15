@@ -1,3 +1,4 @@
+import { captureConsoleErrors } from './utils';
 import { bindActionCreators } from '../src';
 
 describe('bindActionCreators', () => {
@@ -19,8 +20,6 @@ describe('bindActionCreators', () => {
     });
 
     it('ignores actions that are not functions', () => {
-        const _console = console;
-        global.console = { error: jest.fn() };
         const dispatch = jest.fn();
         const actions = {
             action1: () => { return {type: 'action1'}; },
@@ -30,15 +29,16 @@ describe('bindActionCreators', () => {
             un: undefined,
             nul: null
         };
-        const boundActions = bindActionCreators(actions, dispatch);
-        expect(boundActions.object).toBeUndefined();
-        expect(boundActions.string).toBeUndefined();
-        expect(boundActions.number).toBeUndefined();
-        expect(boundActions.un).toBeUndefined();
-        expect(boundActions.nul).toBeUndefined();
-        expect(console.error.mock.calls.length).toBe(5);
-        boundActions.action1();
-        expect(dispatch.mock.calls.length).toEqual(1);
-        global.console = _console;
+        captureConsoleErrors(() => {
+            const boundActions = bindActionCreators(actions, dispatch);
+            expect(boundActions.object).toBeUndefined();
+            expect(boundActions.string).toBeUndefined();
+            expect(boundActions.number).toBeUndefined();
+            expect(boundActions.un).toBeUndefined();
+            expect(boundActions.nul).toBeUndefined();
+            expect(console.error.mock.calls.length).toBe(5);
+            boundActions.action1();
+            expect(dispatch.mock.calls.length).toEqual(1);
+        });
     });
 });
