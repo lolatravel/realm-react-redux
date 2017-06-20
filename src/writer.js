@@ -44,9 +44,9 @@ export default function combineWriters(writers) {
     });
     assertWriterBehavior(finalWriters);
 
-    return (realm) => {
+    return (realm, action) => {
         for (let writer of finalWriters) {
-            writer(realm);
+            writer(realm, action);
         }
     };
 }

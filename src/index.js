@@ -4,6 +4,8 @@ import bindActionCreators from './actions';
 import applyMiddleware from './middleware';
 import compose from './compose';
 import warning from './utils/warning';
+import { realmConnect } from './connect';
+import RealmProvider from './provider';
 
 /*
 * This is a dummy function to check if the function name has been altered by minification.
@@ -26,9 +28,11 @@ if (
 }
 
 export {
-  createRealmStore,
-  combineWriters,
-  bindActionCreators,
-  applyMiddleware,
-  compose
+    createRealmStore,
+    combineWriters,
+    bindActionCreators,
+    applyMiddleware,
+    compose,
+    RealmProvider,
+    realmConnect
 };

@@ -1,11 +1,12 @@
 import Realm from 'realm';
-import { createRealmStore } from '../src';
+import { captureConsoleErrors } from './utils';
+import createRealmStore, { ActionTypes } from '../src/store';
 
 describe('Realm Store', () => {
     const writer = jest.fn();
     const realm = new Realm();
 
-    beforeEach(()=> {
+    beforeEach(() => {
         Realm.mockReset();
         writer.mockReset();
         realm.reset();
@@ -28,7 +29,7 @@ describe('Realm Store', () => {
             const enhancer = jest.fn();
             const middleware = jest.fn();
             enhancer.mockReturnValue(middleware);
-            const store = createRealmStore(writer, { realm }, enhancer);
+            createRealmStore(writer, { realm }, enhancer);
             expect(enhancer.mock.calls[0][0]).toBe(createRealmStore);
             expect(middleware.mock.calls[0][0]).toBe(writer);
             expect(middleware.mock.calls[0][1]).toBe(realm);
@@ -37,12 +38,44 @@ describe('Realm Store', () => {
         it('throws if the writer is not a function', () => {
             expect(() => createRealmStore({}, { realm })).toThrow();
         });
+
+        it('warns if realm is updated outside of store.dispatch', () => {
+            createRealmStore(writer, { realm });
+            captureConsoleErrors(() => {
+                realm.write(() => {});
+                expect(console.error.mock.calls.length).toEqual(1);
+                expect(console.error.mock.calls[0][0]).toEqual(
+                    expect.stringContaining('Realm updated outside'));
+            });
+        });
+
+        it('doesn\'t warn if realm is updated outside of store.dispatch and allowUnsafeWrites is true', () => {
+            const store = createRealmStore(writer, { realm, allowUnsafeWrites: true });
+            expect(store.options.allowUnsafeWrites).toBeTruthy();
+            captureConsoleErrors(() => {
+                realm.write(() => {});
+                expect(console.error.mock.calls.length).toEqual(0);
+            });
+        });
+
+        it('dispatches if realm is updated outside of store.dispatch and watchUnsafeWrites is true', () => {
+            const store = createRealmStore(writer, { realm, watchUnsafeWrites: true });
+            expect(store.options.allowUnsafeWrites).toBeTruthy();
+            expect(store.options.watchUnsafeWrites).toBeTruthy();
+            const listener = jest.fn();
+            store.subscribe(listener);
+            captureConsoleErrors(() => {
+                realm.write(() => {});
+                expect(console.error.mock.calls.length).toEqual(0);
+                expect(listener.mock.calls.length).toEqual(1);
+            });
+        });
     });
 
     describe('dispatch', () => {
         it('throws if that action is not a plain object', () => {
             const store = createRealmStore(writer, { realm });
-            class Test {};
+            class Test {}
             expect(() => store.dispatch(new Test())).toThrow('Actions must be plain objects.');
         });
 
@@ -58,8 +91,16 @@ describe('Realm Store', () => {
             expect(() => store.dispatch({type: 'first'})).toThrow('writers may not dispatch actions');
         });
 
+        it('doesn\'t throw if trying to dispatch an UNSAFE_WRITE action while already dispatching', () => {
+            const store = createRealmStore(() => {
+                store.dispatch({type: ActionTypes.UNSAFE_WRITE});
+            }, { realm });
+            store.dispatch({type: 'first'});
+        });
+
         it('calls the writer from a realm.write transaction', () => {
             const oldWrite = realm.write;
+            const testAction = {type: 'test'};
             let state = 'init';
             realm.write = (fn) => {
                 state = 'writing';
@@ -67,11 +108,12 @@ describe('Realm Store', () => {
                 state = 'done';
             };
             try {
-                const writer = () => {
+                const writer = (realm, action) => {
                     expect(state).toEqual('writing');
+                    expect(action).toEqual(testAction);
                 };
                 const store = createRealmStore(writer, { realm });
-                store.dispatch({type: 'test'});
+                store.dispatch(testAction);
                 expect(state).toEqual('done');
             } finally {
                 realm.write = oldWrite;

@@ -1,0 +1,24 @@
+{
+    "extends": ["semistandard", "standard-jsx"],
+    "parser": "babel-eslint",
+    "plugins": [
+        "react-native",
+        "json"
+    ],
+    "rules": {
+        "quotes": "off",
+        "jsx-quotes": "off",
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "space-before-function-paren": ["error", "never"],
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4],
+        "react/prop-types": ["error"],
+        "react-native/no-unused-styles": "error"
+    },
+    "globals": {
+        "expect": true
+    },
+    "env": {
+        "jest": true
+    }
+}

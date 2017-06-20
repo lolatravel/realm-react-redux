@@ -3,12 +3,12 @@ const Realm = jest.genMockFromModule('realm');
 
 class MockRealm extends Realm {
 
-    addListener(fn) {
+    addListener(event, fn) {
         this.listeners = this.listeners || [];
         this.listeners.push(fn);
     }
 
-    removeListener(fn) {
+    removeListener(event, fn) {
         this.listeners = this.listeners || [];
         const index = this.listeners.indexOf(fn);
         this.listeners.splice(index, 1);

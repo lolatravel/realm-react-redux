@@ -1,17 +1,26 @@
 import isPlainObject from 'lodash.isplainobject';
 import Realm from 'realm';
+import warning from './utils/warning';
 
 export const ActionTypes = {
-    INIT: '@@realm-redux/INIT',
-    PROBE_UNKNOWN_ACTION: '@@realm-redux/PROBE_UNKNOWN_ACTION'
-}
+    INIT: '@@realm-react-redux/INIT',
+    PROBE_UNKNOWN_ACTION: '@@realm-react-redux/PROBE_UNKNOWN_ACTION',
+    UNSAFE_WRITE: '@@realm-react-redux/UNSAFE_WRITE'
+};
 
-export default function createRealmStore(writer, realmOptions, enhancer) {
-    if (typeof realmOptions !== 'object') {
-        throw new Error('Expected realmOptions to be an object');
+export default function createRealmStore(writer, options, enhancer) {
+    if (typeof options !== 'object') {
+        throw new Error('Expected options to be an object');
     }
 
-    let realm = realmOptions.realm;
+    let {
+        realm,
+        allowUnsafeWrites = false,
+        watchUnsafeWrites = false,
+        ...realmOptions
+    } = options;
+    allowUnsafeWrites = allowUnsafeWrites || watchUnsafeWrites;
+
     if (realm && !(realm instanceof Realm)) {
         throw new Error('Expected realmOptions.realm to be a Realm db');
     }
@@ -36,21 +45,15 @@ export default function createRealmStore(writer, realmOptions, enhancer) {
 
     const ensureCanMutateNextListeners = () => {
         if (nextListeners === currentListeners) {
-            nextListeners = currentListeners.slice()
+            nextListeners = currentListeners.slice();
         }
-    }
-
-    realm.addListener(() => {
-        if (!isDispatching) {
-            throw new Error('Realm updated outside of realmStore.dispatch()');
-        }
-    });
+    };
 
     const getRealm = () => realm;
 
     const subscribe = (listener) => {
         if (typeof listener !== 'function') {
-            throw new Error('Expected listener to be a function.')
+            throw new Error('Expected listener to be a function.');
         }
 
         let isSubscribed = true;
@@ -63,13 +66,13 @@ export default function createRealmStore(writer, realmOptions, enhancer) {
                 return;
             }
 
-          isSubscribed = false;
+            isSubscribed = false;
 
-          ensureCanMutateNextListeners();
-          const index = nextListeners.indexOf(listener);
-          nextListeners.splice(index, 1);
-        }
-    }
+            ensureCanMutateNextListeners();
+            const index = nextListeners.indexOf(listener);
+            nextListeners.splice(index, 1);
+        };
+    };
 
     const dispatch = (action) => {
         if (!isPlainObject(action)) {
@@ -87,16 +90,27 @@ export default function createRealmStore(writer, realmOptions, enhancer) {
         }
 
         if (isDispatching) {
-            throw new Error('writers may not dispatch actions.');
+            if (action.type === ActionTypes.UNSAFE_WRITE) {
+                return action;
+            } else {
+                throw new Error('writers may not dispatch actions.');
+            }
         }
 
-        try {
-            isDispatching = true;
-            realm.write(() => {
-                writer(action);
-            });
-        } finally {
-            isDispatching = false;
+        if (action.type !== ActionTypes.UNSAFE_WRITE) {
+            try {
+                isDispatching = true;
+                realm.write(() => {
+                    writer(realm, action);
+                });
+                // TODO: Figure out if this is a bug in realm (testing with 0.15.1)
+                // but change notifications aren't getting fired until the next write(),
+                // even thought the object is already updated. This should be removed
+                // once the problem is solved.
+                realm.write(() => {});
+            } finally {
+                isDispatching = false;
+            }
         }
 
         const listeners = currentListeners = nextListeners;
@@ -105,9 +119,24 @@ export default function createRealmStore(writer, realmOptions, enhancer) {
         return action;
     };
 
+    realm.addListener('change', () => {
+        if (!allowUnsafeWrites && !isDispatching) {
+            warning('Realm updated outside of realmStore.dispatch()');
+        }
+        if (watchUnsafeWrites && !isDispatching) {
+            // If watching for realm updates in general, dispatch
+            // so that listeners get notified of the update
+            dispatch({ type: ActionTypes.UNSAFE_WRITE });
+        }
+    });
+
     return {
         subscribe,
         getRealm,
-        dispatch
+        dispatch,
+        options: {
+            allowUnsafeWrites,
+            watchUnsafeWrites
+        }
     };
-};
+}

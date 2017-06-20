@@ -3,3 +3,9 @@ node_modules/
 
 # Realm
 realm-object-server/
+
+# build
+lib/
+es/
+dist/
+coverage/
