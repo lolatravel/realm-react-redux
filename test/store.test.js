@@ -1,4 +1,5 @@
 import Realm from 'realm';
+import { captureConsoleErrors } from './utils';
 import { createRealmStore } from '../src';
 
 describe('Realm Store', () => {
@@ -37,6 +38,16 @@ describe('Realm Store', () => {
         it('throws if the writer is not a function', () => {
             expect(() => createRealmStore({}, { realm })).toThrow();
         });
+
+        it('throws if realm is updated outside of store.dispatch', () => {
+            const store = createRealmStore(writer, { realm });
+            captureConsoleErrors(() => {
+                realm.write(() => {})
+                expect(console.error.mock.calls.length).toEqual(1);
+                expect(console.error.mock.calls[0][0]).toEqual(
+                    expect.stringContaining('Realm updated outside'));
+            });
+        });
     });
 
     describe('dispatch', () => {
@@ -60,6 +71,7 @@ describe('Realm Store', () => {
 
         it('calls the writer from a realm.write transaction', () => {
             const oldWrite = realm.write;
+            const testAction = {type: 'test'};
             let state = 'init';
             realm.write = (fn) => {
                 state = 'writing';
@@ -67,11 +79,12 @@ describe('Realm Store', () => {
                 state = 'done';
             };
             try {
-                const writer = () => {
+                const writer = (realm, action) => {
                     expect(state).toEqual('writing');
+                    expect(action).toEqual(testAction);
                 };
                 const store = createRealmStore(writer, { realm });
-                store.dispatch({type: 'test'});
+                store.dispatch(testAction);
                 expect(state).toEqual('done');
             } finally {
                 realm.write = oldWrite;
