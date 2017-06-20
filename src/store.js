@@ -1,5 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
 import Realm from 'realm';
+import warning from './utils/warning';
 
 export const ActionTypes = {
     INIT: '@@realm-redux/INIT',
@@ -40,9 +41,9 @@ export default function createRealmStore(writer, realmOptions, enhancer) {
         }
     }
 
-    realm.addListener(() => {
+    realm.addListener('change', () => {
         if (!isDispatching) {
-            throw new Error('Realm updated outside of realmStore.dispatch()');
+            warning('Realm updated outside of realmStore.dispatch()');
         }
     });
 
@@ -93,8 +94,13 @@ export default function createRealmStore(writer, realmOptions, enhancer) {
         try {
             isDispatching = true;
             realm.write(() => {
-                writer(action);
+                writer(realm, action);
             });
+            // TODO: Figure out if this is a bug in realm (testing with 0.15.1)
+            // but change notifications aren't getting fired until the next write(),
+            // even thought the object is already updated. This should be removed
+            // once the problem is solved.
+            realm.write(() => {});
         } finally {
             isDispatching = false;
         }
