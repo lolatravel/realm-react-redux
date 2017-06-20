@@ -1,6 +1,6 @@
 import Realm from 'realm';
 import { captureConsoleErrors } from './utils';
-import { createRealmStore } from '../src';
+import createRealmStore, { ActionTypes } from '../src/store';
 
 describe('Realm Store', () => {
     const writer = jest.fn();
@@ -89,6 +89,13 @@ describe('Realm Store', () => {
                 store.dispatch({type: 'second'});
             }, { realm });
             expect(() => store.dispatch({type: 'first'})).toThrow('writers may not dispatch actions');
+        });
+
+        it('doesn\'t throw if trying to dispatch an UNSAFE_WRITE action while already dispatching', () => {
+            const store = createRealmStore(() => {
+                store.dispatch({type: ActionTypes.UNSAFE_WRITE});
+            }, { realm });
+            store.dispatch({type: 'first'});
         });
 
         it('calls the writer from a realm.write transaction', () => {

@@ -90,7 +90,11 @@ export default function createRealmStore(writer, options, enhancer) {
         }
 
         if (isDispatching) {
-            throw new Error('writers may not dispatch actions.');
+            if (action.type === ActionTypes.UNSAFE_WRITE) {
+                return action;
+            } else {
+                throw new Error('writers may not dispatch actions.');
+            }
         }
 
         if (action.type !== ActionTypes.UNSAFE_WRITE) {

@@ -7,7 +7,7 @@ import { storeShape, subscriptionShape } from '../utils/PropTypes';
 
 let hotReloadingVersion = 0;
 const dummyState = {};
-function noop() {};
+function noop() {}
 function makeSelectorStateful(sourceSelector, store) {
     // wrap the selector in an object that tracks its results between runs.
     const selector = {
@@ -77,22 +77,22 @@ export default function connectAdvanced(
 
     const contextTypes = {
         [storeKey]: storeShape,
-        [subscriptionKey]: subscriptionShape,
+        [subscriptionKey]: subscriptionShape
     };
     const childContextTypes = {
-        [subscriptionKey]: subscriptionShape,
+        [subscriptionKey]: subscriptionShape
     };
 
     return function wrapWithConnect(WrappedComponent) {
         invariant(
-            typeof WrappedComponent == 'function',
+            typeof WrappedComponent === 'function',
             `You must pass a component to the function returned by ` +
             `connect. Instead received ${JSON.stringify(WrappedComponent)}`
         );
 
-        const wrappedComponentName = WrappedComponent.displayName
-            || WrappedComponent.name
-            || 'Component';
+        const wrappedComponentName = WrappedComponent.displayName ||
+            WrappedComponent.name ||
+            'Component';
 
         const displayName = getDisplayName(wrappedComponentName);
 

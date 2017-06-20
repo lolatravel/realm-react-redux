@@ -1,4 +1,5 @@
 import verifySubselectors from './verifySubselectors';
+import { ActionTypes } from '../store';
 
 export function impureFinalPropsSelectorFactory(
     mapPropsToQueries,
@@ -13,7 +14,7 @@ export function impureFinalPropsSelectorFactory(
             mapDispatchToProps(dispatch, ownProps),
             ownProps
         );
-    }
+    };
 }
 
 export function pureFinalPropsSelectorFactory(
@@ -22,10 +23,9 @@ export function pureFinalPropsSelectorFactory(
     mapDispatchToProps,
     mergeProps,
     dispatch,
-    { areOwnPropsEqual, areQueryPropsEqual }
+    { areOwnPropsEqual, areQueryPropsEqual, watchUnsafeWrites }
 ) {
     let hasRunAtLeastOnce = false;
-    let realm;
     let queries;
     let ownProps;
     let queryProps;
@@ -34,11 +34,20 @@ export function pureFinalPropsSelectorFactory(
     let stateChanged = false;
 
     function onStateChanged(query, changes) {
-        Object.keys(changes).forEach(type => {
+        for (let type of Object.keys(changes)) {
             if (changes[type].length > 0) {
                 stateChanged = true;
+                // If we are watching unsafe writes for this connected component
+                // then we must dispatch so that the component will rerun the
+                // selector. The store will ignore this if we are currently
+                // in the middle of dispatching, so this should only affect
+                // changes made outside of the store.
+                if (watchUnsafeWrites) {
+                    dispatch({type: ActionTypes.UNSAFE_WRITE});
+                }
+                return;
             }
-        });
+        }
     }
 
     function forgetQueries(oldQueries) {
