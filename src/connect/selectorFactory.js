@@ -10,7 +10,7 @@ export function impureFinalPropsSelectorFactory(
 ) {
     return function impureFinalPropsSelector(realm, ownProps) {
         return mergeProps(
-            mapQueriesToProps(mapPropsToQueries(realm, ownProps), ownProps),
+            mapQueriesToProps(mapPropsToQueries(realm, ownProps).map(q => q.snapshot()), ownProps),
             mapDispatchToProps(dispatch, ownProps),
             ownProps
         );
@@ -64,7 +64,7 @@ export function pureFinalPropsSelectorFactory(
     function handleFirstCall(realm, firstOwnProps) {
         setupQueries(mapPropsToQueries(realm, firstOwnProps));
         ownProps = firstOwnProps;
-        queryProps = mapQueriesToProps(queries, ownProps);
+        queryProps = mapQueriesToProps(queries.map(q => q.snapshot()), ownProps);
         dispatchProps = mapDispatchToProps(dispatch, ownProps);
         mergedProps = mergeProps(queryProps, dispatchProps, ownProps);
         hasRunAtLeastOnce = true;
@@ -72,7 +72,7 @@ export function pureFinalPropsSelectorFactory(
     }
 
     function handleNewPropsAndNewState() {
-        queryProps = mapQueriesToProps(queries, ownProps);
+        queryProps = mapQueriesToProps(queries.map(q => q.snapshot()), ownProps);
 
         if (mapDispatchToProps.dependsOnOwnProps) {
             dispatchProps = mapDispatchToProps(dispatch, ownProps);
@@ -85,7 +85,7 @@ export function pureFinalPropsSelectorFactory(
 
     function handleNewProps() {
         if (mapQueriesToProps.dependsOnOwnProps) {
-            queryProps = mapQueriesToProps(queries, ownProps);
+            queryProps = mapQueriesToProps(queries.map(q => q.snapshot()), ownProps);
         }
 
         if (mapDispatchToProps.dependsOnOwnProps) {
@@ -97,7 +97,7 @@ export function pureFinalPropsSelectorFactory(
     }
 
     function handleNewState() {
-        const nextQueryProps = mapQueriesToProps(queries, ownProps);
+        const nextQueryProps = mapQueriesToProps(queries.map(q => q.snapshot()), ownProps);
         const queryPropsChanged = !areQueryPropsEqual(nextQueryProps, queryProps);
         queryProps = nextQueryProps;
 
@@ -131,7 +131,7 @@ export function pureFinalPropsSelectorFactory(
     pureFinalPropsSelector.cleanup = function cleanup() {
         // Remove any listeners
         setupQueries(null);
-    }
+    };
     return pureFinalPropsSelector;
 }
 
