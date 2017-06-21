@@ -18,6 +18,15 @@ describe('Realm Store', () => {
             expect(store.getRealm()).toBe(realm);
         });
 
+        it('throws if the passed in realm is not an instance of Realm', () => {
+            expect(() => createRealmStore(writer, { realm: {} }))
+                .toThrow('Expected options.realm to be a Realm db');
+        });
+
+        it('Doesn\'t throw if the passed in realm implements the necessary Realm interface', () => {
+            createRealmStore(writer, { realm: {write: () => {}, addListener: () => {}} });
+        });
+
         it('creates a realm instance if one is not passed in', () => {
             const options = { readOnly: true };
             const store = createRealmStore(writer, options);

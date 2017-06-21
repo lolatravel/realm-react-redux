@@ -21,8 +21,8 @@ export default function createRealmStore(writer, options, enhancer) {
     } = options;
     allowUnsafeWrites = allowUnsafeWrites || watchUnsafeWrites;
 
-    if (realm && !(realm instanceof Realm)) {
-        throw new Error('Expected realmOptions.realm to be a Realm db');
+    if (realm && (typeof realm.write !== 'function' || typeof realm.addListener !== 'function')) {
+        throw new Error('Expected options.realm to be a Realm db or implement the same interface');
     }
 
     realm = realm || new Realm(realmOptions);
