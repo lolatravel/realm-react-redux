@@ -112,7 +112,8 @@ export function pureFinalPropsSelectorFactory(
     function handleSubsequentCalls(realm, nextOwnProps) {
         const propsChanged = !areOwnPropsEqual(nextOwnProps, ownProps);
         if (propsChanged && mapPropsToQueries.dependsOnOwnProps) {
-            setupQueries(mapPropsToQueries(realm, nextOwnProps));
+            const newQueries = mapPropsToQueries(realm, nextOwnProps);
+            if (newQueries !== queries) setupQueries(newQueries);
         }
         ownProps = nextOwnProps;
 
