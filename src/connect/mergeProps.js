@@ -10,13 +10,12 @@ export function wrapMergePropsFunc(mergeProps) {
         let mergedProps;
 
         return function mergePropsProxy(queryProps, dispatchProps, ownProps) {
-            const nextMergedProps = mergeProps(queryProps, dispatchProps, ownProps)
+            const nextMergedProps = mergeProps(queryProps, dispatchProps, ownProps);
 
             if (hasRunOnce) {
                 if (!pure || !areMergedPropsEqual(nextMergedProps, mergedProps)) {
                     mergedProps = nextMergedProps;
                 }
-
             } else {
                 hasRunOnce = true;
                 mergedProps = nextMergedProps;
@@ -27,8 +26,8 @@ export function wrapMergePropsFunc(mergeProps) {
             }
 
             return mergedProps;
-        }
-    }
+        };
+    };
 }
 
 export function whenMergePropsIsFunction(mergeProps) {

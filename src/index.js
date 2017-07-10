@@ -1,11 +1,9 @@
 import createRealmStore from './store';
 import combineWriters from './writer';
-import bindActionCreators from './actions';
-import applyMiddleware from './middleware';
-import compose from './compose';
+import { bindActionCreators, applyMiddleware, compose } from 'redux';
 import warning from './utils/warning';
-import { realmConnect } from './connect';
-import RealmProvider from './provider';
+import { realmConnect, createRealmConnect, realmConnectAdvanced } from './connect';
+import RealmProvider, { createRealmProvider } from './provider';
 
 /*
 * This is a dummy function to check if the function name has been altered by minification.
@@ -14,17 +12,17 @@ import RealmProvider from './provider';
 function isCrushed() {}
 
 if (
-  process.env.NODE_ENV !== 'production' &&
-  typeof isCrushed.name === 'string' &&
-  isCrushed.name !== 'isCrushed'
+    process.env.NODE_ENV !== 'production' &&
+    typeof isCrushed.name === 'string' &&
+    isCrushed.name !== 'isCrushed'
 ) {
-  warning(
-    'You are currently using minified code outside of NODE_ENV === \'production\'. ' +
-    'This means that you are running a slower development build of Redux. ' +
-    'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' +
-    'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' +
-    'to ensure you have the correct code for your production build.'
-  )
+    warning(
+        'You are currently using minified code outside of NODE_ENV === \'production\'. ' +
+        'This means that you are running a slower development build of Redux. ' +
+        'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' +
+        'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' +
+        'to ensure you have the correct code for your production build.'
+    );
 }
 
 export {
@@ -34,5 +32,8 @@ export {
     applyMiddleware,
     compose,
     RealmProvider,
-    realmConnect
+    createRealmProvider,
+    realmConnect,
+    createRealmConnect,
+    realmConnectAdvanced
 };

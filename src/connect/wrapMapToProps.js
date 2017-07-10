@@ -9,7 +9,7 @@ export function wrapMapToPropsConstant(getConstant) {
         }
         constantSelector.dependsOnOwnProps = false;
         return constantSelector;
-    }
+    };
 }
 
 // dependsOnOwnProps is used by createMapToPropsProxy to determine whether to pass props as args
@@ -43,7 +43,7 @@ export function wrapMapToPropsFunc(mapToProps, methodName) {
             return proxy.dependsOnOwnProps
                 ? proxy.mapToProps(realmOrDispatch, ownProps)
                 : proxy.mapToProps(realmOrDispatch);
-        }
+        };
 
         // allow detectFactoryAndVerify to get ownProps
         proxy.dependsOnOwnProps = true;
@@ -68,8 +68,8 @@ export function wrapMapToPropsFunc(mapToProps, methodName) {
             }
 
             return props;
-        }
+        };
 
         return proxy;
-    }
+    };
 }
