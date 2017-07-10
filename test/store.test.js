@@ -9,7 +9,7 @@ describe('Realm Store', () => {
     beforeEach(() => {
         Realm.mockReset();
         writer.mockReset();
-        realm.reset();
+        realm.mockReset();
     });
 
     describe('createRealmStore', () => {

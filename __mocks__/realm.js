@@ -1,8 +1,7 @@
 
 const Realm = jest.genMockFromModule('realm');
 
-class MockRealm extends Realm {
-
+export class MockRealm extends Realm {
     addListener(event, fn) {
         this.listeners = this.listeners || [];
         this.listeners.push(fn);
@@ -20,9 +19,41 @@ class MockRealm extends Realm {
         if (this.listeners) this.listeners.forEach(listener => listener());
     }
 
-    reset() {
-        this.listeners = null;
+    mockReset() {
+        delete this.listeners;
+    }
+
+    mockClear() {
+        this.mockReset();
     }
 }
 
+export class MockQuery {
+    addListener(fn) {
+        this.listeners = this.listeners || [];
+        this.listeners.push(fn);
+    }
+
+    removeListener(fn) {
+        this.listeners = this.listeners || [];
+        const index = this.listeners.indexOf(fn);
+        this.listeners.splice(index, 1);
+    }
+
+    triggerListeners(changes) {
+        if (this.listeners) this.listeners.forEach(listener => listener(this, changes));
+    }
+
+    snapshot() {
+        return this;
+    }
+
+    mockReset() {
+        delete this.listeners;
+    }
+
+    mockClear() {
+        this.mockReset();
+    }
+}
 export default MockRealm;

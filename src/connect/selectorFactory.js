@@ -68,6 +68,7 @@ export function pureFinalPropsSelectorFactory(
         dispatchProps = mapDispatchToProps(dispatch, ownProps);
         mergedProps = mergeProps(queryProps, dispatchProps, ownProps);
         hasRunAtLeastOnce = true;
+        stateChanged = false;
         return mergedProps;
     }
 
