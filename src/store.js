@@ -49,7 +49,7 @@ export default function createRealmStore(writer, options, enhancer) {
         }
     };
 
-    const getRealm = () => realm;
+    const getState = () => realm;
 
     const subscribe = (listener) => {
         if (typeof listener !== 'function') {
@@ -132,7 +132,7 @@ export default function createRealmStore(writer, options, enhancer) {
 
     return {
         subscribe,
-        getRealm,
+        getState,
         dispatch,
         options: {
             allowUnsafeWrites,

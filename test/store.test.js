@@ -15,7 +15,7 @@ describe('Realm Store', () => {
     describe('createRealmStore', () => {
         it('uses the passed-in realm', () => {
             const store = createRealmStore(writer, { realm });
-            expect(store.getRealm()).toBe(realm);
+            expect(store.getState()).toBe(realm);
         });
 
         it('throws if the passed in realm is not an instance of Realm', () => {
@@ -31,7 +31,7 @@ describe('Realm Store', () => {
             const options = { readOnly: true };
             const store = createRealmStore(writer, options);
             expect(Realm.mock.calls[0][0]).toEqual(options);
-            expect(store.getRealm()).toEqual(Realm.mock.instances[0]);
+            expect(store.getState()).toEqual(Realm.mock.instances[0]);
         });
 
         it('it calls the enhancer if one is passed', () => {
