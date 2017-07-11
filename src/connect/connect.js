@@ -7,6 +7,10 @@ import defaultMergePropsFactories from './mergeProps';
 import defaultSelectorFactory from './selectorFactory';
 
 /*
+  This is close to a direct copy out of react-redux with a tweak to the
+  defaultMapQueriesToProps and defaultMapPropsToQueries methods. This is
+  only copied because it isn't directly exposed in react-redux for re-use.
+
   connect is a facade over connectAdvanced. It turns its args into a compatible
   selectorFactory, which has the signature:
 
@@ -31,11 +35,7 @@ function match(arg, factories, name) {
 
     return (dispatch, options) => {
         throw new Error(`Invalid value of type ${typeof arg} for ${name} argument when connecting component ${options.wrappedComponentName}.`);
-    }
-}
-
-function strictEqual(a, b) {
-    return a === b;
+    };
 }
 
 // createConnect with default args builds the 'official' connect behavior. Calling it with
@@ -67,10 +67,10 @@ export function createConnect({
 
         return connectHOC(selectorFactory, {
             // used in error messages
-            methodName: 'connect',
+            methodName: 'realmConnect',
 
             // used to compute Connect's displayName from the wrapped component's displayName.
-            getDisplayName: name => `Connect(${name})`,
+            getDisplayName: name => `RealmConnect(${name})`,
 
             // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
             shouldHandleStateChanges: Boolean(mapPropsToQueries) && Boolean(mapQueriesToProps),
@@ -88,7 +88,7 @@ export function createConnect({
             // any extra options args can override defaults of connect or connectAdvanced
             ...extraOptions
         });
-    }
+    };
 }
 
 export default createConnect();

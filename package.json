@@ -91,7 +91,9 @@
     "istanbul": "^0.4.5",
     "jest": "^20.0.4",
     "react": "^15.6.1",
+    "react-redux": "^5.0.0",
     "realm": "^1.8.1",
+    "redux": "^3.0.0",
     "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",
@@ -101,6 +103,8 @@
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0-0 || ^16.0.0-0",
+    "react-redux": "^5.0.0",
+    "redux": "^2.0.0 || ^3.0.0",
     "realm": "^0.15.0 || ^1.0.0"
   },
   "dependencies": {

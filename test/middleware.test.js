@@ -1,4 +1,4 @@
-import { applyMiddleware } from '../src';
+import { applyMiddleware } from 'redux';
 
 describe('applyMiddleware', () => {
     const dispatch = jest.fn();
@@ -6,7 +6,6 @@ describe('applyMiddleware', () => {
     const middlewareSetup = jest.fn();
     const middlewareRun = jest.fn();
     const realm = { realm: 'realm' };
-    const getRealm = () => realm;
     const action1 = { type: 'TEST1' };
     const action2 = { type: 'TEST2' };
     const asyncAction = (dispatch, realm) => {
@@ -18,20 +17,20 @@ describe('applyMiddleware', () => {
     const createRealmStore = () => {
         return {
             dispatch: (action) => writer(realm, action),
-            getRealm: () => realm
+            getState: () => realm
         };
     };
-    const middleware = ({dispatch, getRealm}) => {
-        middlewareSetup({dispatch, getRealm});
+    const middleware = ({dispatch, getState}) => {
+        middlewareSetup({dispatch, getState});
         return next => action => {
             middlewareRun(action);
             return next(action);
         };
     };
-    const thunk = ({dispatch, getRealm}) => {
+    const thunk = ({dispatch, getState}) => {
         return next => action => {
             return typeof action === 'function' ?
-                action(dispatch, getRealm) :
+                action(dispatch, getState) :
                 next(action);
         };
     };
@@ -49,7 +48,7 @@ describe('applyMiddleware', () => {
         store.dispatch(action2);
 
         expect(middlewareSetup.mock.calls.length).toEqual(1);
-        expect(middlewareSetup.mock.calls[0][0]).toHaveProperty('getRealm');
+        expect(middlewareSetup.mock.calls[0][0]).toHaveProperty('getState');
         expect(middlewareSetup.mock.calls[0][0]).toHaveProperty('dispatch');
 
         expect(writer.mock.calls[0][0]).toBe(realm);

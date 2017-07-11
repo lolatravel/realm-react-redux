@@ -1,5 +1,4 @@
-import { captureConsoleErrors } from './utils';
-import { bindActionCreators } from '../src';
+import { bindActionCreators } from 'redux';
 
 describe('bindActionCreators', () => {
     it('throws if passed null', () => {
@@ -29,16 +28,13 @@ describe('bindActionCreators', () => {
             un: undefined,
             nul: null
         };
-        captureConsoleErrors(() => {
-            const boundActions = bindActionCreators(actions, dispatch);
-            expect(boundActions.object).toBeUndefined();
-            expect(boundActions.string).toBeUndefined();
-            expect(boundActions.number).toBeUndefined();
-            expect(boundActions.un).toBeUndefined();
-            expect(boundActions.nul).toBeUndefined();
-            expect(console.error.mock.calls.length).toBe(5);
-            boundActions.action1();
-            expect(dispatch.mock.calls.length).toEqual(1);
-        });
+        const boundActions = bindActionCreators(actions, dispatch);
+        expect(boundActions.object).toBeUndefined();
+        expect(boundActions.string).toBeUndefined();
+        expect(boundActions.number).toBeUndefined();
+        expect(boundActions.un).toBeUndefined();
+        expect(boundActions.nul).toBeUndefined();
+        boundActions.action1();
+        expect(dispatch.mock.calls.length).toEqual(1);
     });
 });
