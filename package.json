@@ -14,7 +14,7 @@
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
     "clean": "rimraf lib dist es coverage",
     "lint": "eslint src test; exit 0;",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepare": "npm run clean && npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"
