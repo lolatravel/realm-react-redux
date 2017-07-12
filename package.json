@@ -114,6 +114,7 @@
     "prop-types": "^15.5.10"
   },
   "jest": {
-    "coverageDirectory": "./coverage/"
+    "coverageDirectory": "./coverage/",
+    "testPathIgnorePatterns": ["/node_modules/", "/examples/"]
   }
 }
