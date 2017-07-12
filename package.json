@@ -94,6 +94,7 @@
     "react-redux": "^5.0.0",
     "realm": "^1.8.1",
     "redux": "^3.0.0",
+    "rimraf": "^2.6.1",
     "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",
