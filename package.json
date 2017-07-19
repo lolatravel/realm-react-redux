@@ -14,7 +14,7 @@
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
     "clean": "rimraf lib dist es coverage",
     "lint": "eslint src test; exit 0;",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepare": "npm run clean && npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"
@@ -94,6 +94,7 @@
     "react-redux": "^5.0.0",
     "realm": "^1.8.1",
     "redux": "^3.0.0",
+    "rimraf": "^2.6.1",
     "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",
@@ -114,6 +115,7 @@
     "prop-types": "^15.5.10"
   },
   "jest": {
-    "coverageDirectory": "./coverage/"
+    "coverageDirectory": "./coverage/",
+    "testPathIgnorePatterns": ["/node_modules/", "/examples/"]
   }
 }

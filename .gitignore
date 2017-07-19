@@ -9,3 +9,4 @@ lib/
 es/
 dist/
 coverage/
+realm-react-redux*.tgz
