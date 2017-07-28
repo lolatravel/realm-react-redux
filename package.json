@@ -1,7 +1,6 @@
 {
   "name": "realm-react-redux",
-  "version": "0.0.5",
-  "private": "true",
+  "version": "0.0.6",
   "description": "Use redux patterns with realm as your store.",
   "main": "./lib/index.js",
   "module": "es/index.js",
