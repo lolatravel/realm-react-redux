@@ -11,7 +11,7 @@
 		"react": "16.0.0-alpha.12",
 		"react-native": "^0.46.1",
 		"react-redux": "^5.0.5",
-		"realm": "^1.9.0",
+		"realm": "^2.2.1",
 		"redux": "^3.7.1",
 		"uuid": "^3.1.0"
 	},
