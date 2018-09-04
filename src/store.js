@@ -32,7 +32,7 @@ export default function createRealmStore(writer, options, enhancer) {
             throw new Error('Expected the enhancer to be a function.');
         }
 
-        return enhancer(createRealmStore)(writer, realm);
+        return enhancer(createRealmStore)(writer, {...options, realm});
     }
 
     if (typeof writer !== 'function') {
