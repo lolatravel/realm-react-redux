@@ -37,11 +37,12 @@ describe('Realm Store', () => {
         it('it calls the enhancer if one is passed', () => {
             const enhancer = jest.fn();
             const middleware = jest.fn();
+            const options = { realm };
             enhancer.mockReturnValue(middleware);
-            createRealmStore(writer, { realm }, enhancer);
+            createRealmStore(writer, options, enhancer);
             expect(enhancer.mock.calls[0][0]).toBe(createRealmStore);
             expect(middleware.mock.calls[0][0]).toBe(writer);
-            expect(middleware.mock.calls[0][1]).toBe(realm);
+            expect(middleware.mock.calls[0][1]).toBe(options);
         });
 
         it('throws if the writer is not a function', () => {

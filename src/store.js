@@ -9,8 +9,20 @@ export const ActionTypes = {
 };
 
 export default function createRealmStore(writer, options, enhancer) {
+    if (typeof writer !== 'function') {
+        throw new Error('Expected the writer to be a function.');
+    }
+
     if (typeof options !== 'object') {
         throw new Error('Expected options to be an object');
+    }
+
+    if (typeof enhancer !== 'undefined') {
+        if (typeof enhancer !== 'function') {
+            throw new Error('Expected the enhancer to be a function.');
+        }
+
+        return enhancer(createRealmStore)(writer, options);
     }
 
     let {
@@ -26,18 +38,6 @@ export default function createRealmStore(writer, options, enhancer) {
     }
 
     realm = realm || new Realm(realmOptions);
-
-    if (typeof enhancer !== 'undefined') {
-        if (typeof enhancer !== 'function') {
-            throw new Error('Expected the enhancer to be a function.');
-        }
-
-        return enhancer(createRealmStore)(writer, realm);
-    }
-
-    if (typeof writer !== 'function') {
-        throw new Error('Expected the writer to be a function.');
-    }
 
     let isDispatching = false;
     let currentListeners = [];
