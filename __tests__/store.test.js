@@ -24,7 +24,7 @@ describe('Realm Store', () => {
         });
 
         it('Doesn\'t throw if the passed in realm implements the necessary Realm interface', () => {
-            createRealmStore(writer, { realm: {write: () => {}, addListener: () => {}} });
+            createRealmStore(writer, { realm: { write: () => {}, addListener: () => {} } });
         });
 
         it('creates a realm instance if one is not passed in', () => {
@@ -96,21 +96,21 @@ describe('Realm Store', () => {
 
         it('throws if trying to dispatch an action while already dispatching', () => {
             const store = createRealmStore(() => {
-                store.dispatch({type: 'second'});
+                store.dispatch({ type: 'second' });
             }, { realm });
-            expect(() => store.dispatch({type: 'first'})).toThrow('writers may not dispatch actions');
+            expect(() => store.dispatch({ type: 'first' })).toThrow('writers may not dispatch actions');
         });
 
         it('doesn\'t throw if trying to dispatch an UNSAFE_WRITE action while already dispatching', () => {
             const store = createRealmStore(() => {
-                store.dispatch({type: ActionTypes.UNSAFE_WRITE});
+                store.dispatch({ type: ActionTypes.UNSAFE_WRITE });
             }, { realm });
-            store.dispatch({type: 'first'});
+            store.dispatch({ type: 'first' });
         });
 
         it('calls the writer from a realm.write transaction', () => {
             const oldWrite = realm.write;
-            const testAction = {type: 'test'};
+            const testAction = { type: 'test' };
             let state = 'init';
             realm.write = (fn) => {
                 state = 'writing';
@@ -136,7 +136,7 @@ describe('Realm Store', () => {
             const store = createRealmStore(writer, { realm });
             const listener = jest.fn();
             store.subscribe(listener);
-            store.dispatch({type: 'test'});
+            store.dispatch({ type: 'test' });
             expect(listener.mock.calls.length).toEqual(1);
         });
 
@@ -145,7 +145,7 @@ describe('Realm Store', () => {
             const listener = jest.fn();
             const unsubscribe = store.subscribe(listener);
             unsubscribe();
-            store.dispatch({type: 'test'});
+            store.dispatch({ type: 'test' });
             expect(listener.mock.calls.length).toEqual(0);
         });
     });

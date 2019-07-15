@@ -5,8 +5,8 @@ import { connectAdvanced } from 'react-redux';
 // match the store key we use in the provider. The second is that we need to cleanup
 // the realm listeners when the connected component is unmounted. To do that we just extend
 // the component returned from connectAdvanced to add the cleanup call to componentWillUnmount.
-export default function(selectorFactory, { storeKey = 'realmStore', ...connectOptions }) {
-    const connector = connectAdvanced(selectorFactory, { storeKey, ...connectOptions });
+export default function(selectorFactory, { ...connectOptions }) {
+    const connector = connectAdvanced(selectorFactory, { ...connectOptions });
     return function wrapWithConnect(ComponentToWrap) {
         const WrappedComponent = connector(ComponentToWrap);
         return class RealmConnectedComponent extends WrappedComponent {

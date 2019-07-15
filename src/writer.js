@@ -2,19 +2,33 @@ import { ActionTypes } from './store';
 
 class FakeRealm {
     constructor(error) { this._error = error; }
+
     throw() { throw new Error(this._error); }
+
     open() { this.throw(); }
+
     openAsync() { this.throw(); }
+
     schemaVersion() { this.throw(); }
+
     addListener() { this.throw(); }
+
     close() { this.throw(); }
+
     create() { this.throw(); }
+
     delete() { this.throw(); }
+
     deleteAll() { this.throw(); }
+
     objectForPRimaryKey() { this.throw(); }
+
     objects() { this.throw(); }
+
     removeAllListeners() { this.throw(); }
+
     removeListener() { this.throw(); }
+
     write() { this.throw(); }
 }
 
@@ -45,7 +59,7 @@ export default function combineWriters(writers) {
     assertWriterBehavior(finalWriters);
 
     return (realm, action) => {
-        for (let writer of finalWriters) {
+        for (const writer of finalWriters) {
             writer(realm, action);
         }
     };

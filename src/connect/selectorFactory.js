@@ -34,7 +34,7 @@ export function pureFinalPropsSelectorFactory(
     let stateChanged = false;
 
     function onStateChanged(query, changes) {
-        for (let type of Object.keys(changes)) {
+        for (const type of Object.keys(changes)) {
             if (changes[type].length > 0) {
                 stateChanged = true;
                 // If we are watching unsafe writes for this connected component
@@ -43,7 +43,7 @@ export function pureFinalPropsSelectorFactory(
                 // in the middle of dispatching, so this should only affect
                 // changes made outside of the store.
                 if (watchUnsafeWrites) {
-                    dispatch({type: ActionTypes.UNSAFE_WRITE});
+                    dispatch({ type: ActionTypes.UNSAFE_WRITE });
                 }
                 return;
             }

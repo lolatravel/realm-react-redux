@@ -20,18 +20,18 @@ describe('applyMiddleware', () => {
             getState: () => realm
         };
     };
-    const middleware = ({dispatch, getState}) => {
-        middlewareSetup({dispatch, getState});
+    const middleware = ({ dispatch, getState }) => {
+        middlewareSetup({ dispatch, getState });
         return next => action => {
             middlewareRun(action);
             return next(action);
         };
     };
-    const thunk = ({dispatch, getState}) => {
+    const thunk = ({ dispatch, getState }) => {
         return next => action => {
-            return typeof action === 'function' ?
-                action(dispatch, getState) :
-                next(action);
+            return typeof action === 'function'
+                ? action(dispatch, getState)
+                : next(action);
         };
     };
 

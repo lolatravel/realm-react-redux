@@ -4,7 +4,7 @@ function verify(selector, methodName, displayName) {
     if (!selector) {
         throw new Error(`Unexpected value for ${methodName} in ${displayName}.`);
     } else if (methodName === 'mapPropsToQueries' || methodName === 'mapQueriesToProps' || methodName === 'mapDispatchToProps') {
-        if (!selector.hasOwnProperty('dependsOnOwnProps')) {
+        if (!selector.hasOwnProperty('dependsOnOwnProps')) { // eslint-disable-line no-prototype-builtins
             warning(
                 `The selector for ${methodName} of ${displayName} did not specify a value for dependsOnOwnProps.`
             );
