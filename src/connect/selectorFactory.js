@@ -10,7 +10,7 @@ export function impureFinalPropsSelectorFactory(
 ) {
     return function impureFinalPropsSelector(realm, ownProps) {
         return mergeProps(
-            mapQueriesToProps(mapPropsToQueries(realm, ownProps).map(q => q.snapshot()), ownProps),
+            mapQueriesToProps(mapPropsToQueries(realm, ownProps), ownProps),
             mapDispatchToProps(dispatch, ownProps),
             ownProps
         );
@@ -37,6 +37,7 @@ export function pureFinalPropsSelectorFactory(
         for (const type of Object.keys(changes)) {
             if (changes[type].length > 0) {
                 stateChanged = true;
+                query.changed = true;
                 // If we are watching unsafe writes for this connected component
                 // then we must dispatch so that the component will rerun the
                 // selector. The store will ignore this if we are currently
@@ -64,7 +65,7 @@ export function pureFinalPropsSelectorFactory(
     function handleFirstCall(realm, firstOwnProps) {
         setupQueries(mapPropsToQueries(realm, firstOwnProps));
         ownProps = firstOwnProps;
-        queryProps = mapQueriesToProps(queries.map(q => q.snapshot()), ownProps);
+        queryProps = mapQueriesToProps(queries, ownProps);
         dispatchProps = mapDispatchToProps(dispatch, ownProps);
         mergedProps = mergeProps(queryProps, dispatchProps, ownProps);
         hasRunAtLeastOnce = true;
@@ -73,7 +74,7 @@ export function pureFinalPropsSelectorFactory(
     }
 
     function handleNewPropsAndNewState() {
-        queryProps = mapQueriesToProps(queries.map(q => q.snapshot()), ownProps);
+        queryProps = mapQueriesToProps(queries, ownProps);
 
         if (mapDispatchToProps.dependsOnOwnProps) {
             dispatchProps = mapDispatchToProps(dispatch, ownProps);
@@ -86,7 +87,7 @@ export function pureFinalPropsSelectorFactory(
 
     function handleNewProps() {
         if (mapQueriesToProps.dependsOnOwnProps) {
-            queryProps = mapQueriesToProps(queries.map(q => q.snapshot()), ownProps);
+            queryProps = mapQueriesToProps(queries, ownProps);
         }
 
         if (mapDispatchToProps.dependsOnOwnProps) {
@@ -98,7 +99,13 @@ export function pureFinalPropsSelectorFactory(
     }
 
     function handleNewState() {
-        const nextQueryProps = mapQueriesToProps(queries.map(q => q.snapshot()), ownProps);
+        const nextQueryProps = mapQueriesToProps(queries.map(q => {
+            if (q.changed && q.snapshot) {
+                Reflect.deleteProperty(q, 'changed');
+                return q.snapshot();
+            }
+            return q;
+        }), ownProps);
         const queryPropsChanged = !areQueryPropsEqual(nextQueryProps, queryProps);
         queryProps = nextQueryProps;
 
