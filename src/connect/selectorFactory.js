@@ -32,12 +32,13 @@ export function pureFinalPropsSelectorFactory(
     let dispatchProps;
     let mergedProps;
     let stateChanged = false;
+    let updatedQueries;
 
     function onStateChanged(query, changes) {
         for (const type of Object.keys(changes)) {
             if (changes[type].length > 0) {
                 stateChanged = true;
-                query.changed = true;
+                updatedQueries.push(query);
                 // If we are watching unsafe writes for this connected component
                 // then we must dispatch so that the component will rerun the
                 // selector. The store will ignore this if we are currently
@@ -53,6 +54,7 @@ export function pureFinalPropsSelectorFactory(
 
     function forgetQueries(oldQueries) {
         oldQueries && oldQueries.forEach(q => q.removeListener(onStateChanged));
+        updatedQueries = [];
     }
 
     function setupQueries(newQueries) {
@@ -100,10 +102,15 @@ export function pureFinalPropsSelectorFactory(
 
     function handleNewState() {
         const nextQueryProps = mapQueriesToProps(queries.map(q => {
-            if (q.changed && q.snapshot) {
-                Reflect.deleteProperty(q, 'changed');
+            const updatedQueryIndex = updatedQueries.findIndex((u) => u === q);
+            if (updatedQueryIndex !== -1) {
+                updatedQueries.splice(updatedQueryIndex, 1);
+            }
+
+            if (q.snapshot) {
                 return q.snapshot();
             }
+
             return q;
         }), ownProps);
         const queryPropsChanged = !areQueryPropsEqual(nextQueryProps, queryProps);
