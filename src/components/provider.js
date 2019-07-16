@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Subscription from 'react-redux/lib/utils/Subscription';
 import { ReactReduxContext } from './Context';
-import Subscription from '../utils/Subscription';
 
 class Provider extends Component {
     constructor(props) {

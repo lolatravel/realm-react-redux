@@ -9,7 +9,7 @@ import React, {
     useReducer
 } from 'react';
 import { isValidElementType, isContextConsumer } from 'react-is';
-import Subscription from '../utils/Subscription';
+import Subscription from 'react-redux/lib/utils/Subscription';
 
 import { ReactReduxContext } from './Context';
 
