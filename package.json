@@ -2,10 +2,18 @@
   "name": "realm-react-redux",
   "version": "0.0.8",
   "description": "Use redux patterns with realm as your store.",
-  "main": "./src/index.js",
+  "main": "./lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
   "scripts": {
-    "clean": "rimraf coverage",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
+    "build:es": "cross-env BABEL_ENV=es babel src --out-dir es",
+    "build:umd": "cross-env BABEL_ENV=rollup NODE_ENV=development rollup -c -o dist/realm-react-redux.js",
+    "build:umd:min": "cross-env BABEL_ENV=rollup NODE_ENV=production rollup -c -o dist/realm-react-redux.min.js",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
+    "clean": "rimraf lib dist es coverage",
     "lint": "eslint src test; exit 0;",
+    "prepare": "npm run clean && npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"
@@ -15,7 +23,10 @@
     "url": "https://github.com/lolatravel/realm-react-redux.git"
   },
   "files": [
-    "src"
+    "dist",
+    "lib",
+    "src",
+    "es"
   ],
   "keywords": [
     "react",
@@ -36,6 +47,7 @@
     "@babel/plugin-external-helpers": "7.2.0",
     "@babel/plugin-proposal-decorators": "7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "7.5.4",
+    "@babel/plugin-syntax-jsx": "^7.2.0",
     "@babel/plugin-transform-arrow-functions": "7.2.0",
     "@babel/plugin-transform-block-scoped-functions": "7.2.0",
     "@babel/plugin-transform-block-scoping": "7.4.4",
@@ -46,6 +58,7 @@
     "@babel/plugin-transform-modules-commonjs": "7.5.0",
     "@babel/plugin-transform-object-super": "7.2.0",
     "@babel/plugin-transform-parameters": "^7.4.4",
+    "@babel/plugin-transform-react-jsx": "^7.3.0",
     "@babel/plugin-transform-shorthand-properties": "7.2.0",
     "@babel/plugin-transform-template-literals": "7.4.4",
     "@babel/preset-react": "7.0.0",
@@ -73,7 +86,13 @@
     "react-redux": "7.1.0",
     "realm": "2.29.1",
     "redux": "4.0.4",
-    "rimraf": "2.6.3"
+    "rimraf": "2.6.3",
+    "rollup": "1.17.0",
+    "rollup-plugin-babel": "4.3.3",
+    "rollup-plugin-commonjs": "10.0.1",
+    "rollup-plugin-node-resolve": "5.2.0",
+    "rollup-plugin-replace": "2.2.0",
+    "rollup-plugin-uglify": "6.0.2"
   },
   "peerDependencies": {
     "react": "^16.8.0",

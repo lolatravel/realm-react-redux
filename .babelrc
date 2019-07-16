@@ -12,7 +12,9 @@
         "@babel/plugin-transform-parameters",
         ["@babel/plugin-transform-destructuring", { "loose": true }],
         "@babel/plugin-transform-block-scoping",
-        "@babel/plugin-proposal-object-rest-spread"
+        "@babel/plugin-proposal-object-rest-spread",
+        "@babel/plugin-transform-react-jsx",
+        "@babel/plugin-syntax-jsx"
     ],
     "env": {
         "test": {
