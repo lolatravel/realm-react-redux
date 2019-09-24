@@ -5,7 +5,6 @@ import {
     TextInput,
     ScrollView,
     View,
-    Modal,
     TouchableHighlight
 } from 'react-native';
 
@@ -71,17 +70,17 @@ export default class ToDoList extends Component {
         this.updateText = this.updateText.bind(this);
         this.addTodo = this.addTodo.bind(this);
         this.toggleTodo = this.toggleTodo.bind(this);
-        this.state = {text: ''};
+        this.state = { text: '' };
     }
 
     updateText(text) {
-        this.setState({text});
+        this.setState({ text });
     }
 
     addTodo() {
         const { createTodo } = this.props;
         const { text } = this.state;
-        this.setState({text: ''});
+        this.setState({ text: '' });
         createTodo(text);
     }
 

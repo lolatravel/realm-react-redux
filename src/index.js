@@ -3,7 +3,7 @@ import combineWriters from './writer';
 import { bindActionCreators, applyMiddleware, compose } from 'redux';
 import warning from './utils/warning';
 import { realmConnect, createRealmConnect, realmConnectAdvanced } from './connect';
-import RealmProvider, { createRealmProvider } from './provider';
+import RealmProvider from './components/provider';
 
 /*
 * This is a dummy function to check if the function name has been altered by minification.
@@ -32,7 +32,6 @@ export {
     applyMiddleware,
     compose,
     RealmProvider,
-    createRealmProvider,
     realmConnect,
     createRealmConnect,
     realmConnectAdvanced

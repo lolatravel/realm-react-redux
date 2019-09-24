@@ -1,34 +1,41 @@
-import nodeResolve from 'rollup-plugin-node-resolve'
-import babel from 'rollup-plugin-babel'
-import replace from 'rollup-plugin-replace'
-import commonjs from 'rollup-plugin-commonjs'
-import uglify from 'rollup-plugin-uglify'
+import nodeResolve from 'rollup-plugin-node-resolve';
+import babel from 'rollup-plugin-babel';
+import replace from 'rollup-plugin-replace';
+import commonjs from 'rollup-plugin-commonjs';
+import { uglify } from 'rollup-plugin-uglify';
 
 const env = process.env.NODE_ENV;
 
 const config = {
-    entry: 'src/index.js',
+    input: 'src/index.js',
     external: [
         'react',
         'redux',
         'realm'
     ],
-    globals: {
-        'react': 'React',
-        'redux': 'Redux',
-        'realm': 'Realm'
+    output: {
+        globals: {
+            react: 'React',
+            redux: 'Redux',
+            realm: 'Realm'
+        },
+        format: 'umd',
+        name: 'RealmReactRedux'
     },
-    format: 'umd',
-    moduleName: 'ReactRedux',
     plugins: [
-        nodeResolve(),
         babel({
             exclude: '**/node_modules/**'
         }),
         replace({
             'process.env.NODE_ENV': JSON.stringify(env)
         }),
-        commonjs()
+        nodeResolve(),
+        commonjs({
+            include: 'node_modules/**',
+            namedExports: {
+                'node_modules/react-is/index.js': ['isValidElementType', 'isContextConsumer']
+            }
+        })
     ]
 };
 
@@ -38,8 +45,7 @@ if (env === 'production') {
             compress: {
                 pure_getters: true,
                 unsafe: true,
-                unsafe_comps: true,
-                warnings: false
+                unsafe_comps: true
             }
         })
     );

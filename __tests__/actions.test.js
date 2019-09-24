@@ -8,8 +8,8 @@ describe('bindActionCreators', () => {
     it('wraps each key of an object in the dispatch function', () => {
         const dispatch = jest.fn();
         const actions = {
-            action1: () => { return {type: 'action1'}; },
-            action2: () => { return {type: 'action2'}; }
+            action1: () => { return { type: 'action1' }; },
+            action2: () => { return { type: 'action2' }; }
         };
         const boundActions = bindActionCreators(actions, dispatch);
         expect(Object.keys(boundActions)).toEqual(Object.keys(actions));
@@ -21,7 +21,7 @@ describe('bindActionCreators', () => {
     it('ignores actions that are not functions', () => {
         const dispatch = jest.fn();
         const actions = {
-            action1: () => { return {type: 'action1'}; },
+            action1: () => { return { type: 'action1' }; },
             object: {},
             string: 'string',
             number: 1,

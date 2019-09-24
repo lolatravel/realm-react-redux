@@ -90,7 +90,7 @@ describe('selectorFactory', () => {
         expect(mergeProps.mock.calls[0][0]).toEqual(queryProps);
         expect(mergeProps.mock.calls[0][1]).toBe(dispatchProps);
         expect(mergeProps.mock.calls[0][2]).toBe(firstProps);
-        expect(nextProps).toEqual({...finalProps, ...firstProps});
+        expect(nextProps).toEqual({ ...finalProps, ...firstProps });
     });
 
     it('skips unnecessary mapPropsToQueries call when not dependent on ownProps', () => {
@@ -108,7 +108,7 @@ describe('selectorFactory', () => {
         );
 
         selector(realm, firstProps);
-        const nextProps = selector(realm, secondProps);
+        selector(realm, secondProps);
         expect(areOwnPropsEqual.mock.calls.length).toBe(1);
         expect(mapPropsToQueries.mock.calls.length).toBe(1);
     });
@@ -147,7 +147,7 @@ describe('selectorFactory', () => {
         );
 
         selector(realm, firstProps);
-        query1.triggerListeners({insertions: [null]});
+        query1.triggerListeners({ insertions: [null] });
         const nextProps = selector(realm, secondProps);
         expect(areQueryPropsEqual.mock.calls.length).toBe(0);
         expect(areOwnPropsEqual.mock.calls.length).toBe(1);
@@ -168,7 +168,7 @@ describe('selectorFactory', () => {
         expect(mergeProps.mock.calls[1][0]).toEqual(queryProps);
         expect(mergeProps.mock.calls[1][1]).toBe(dispatchProps);
         expect(mergeProps.mock.calls[1][2]).toBe(secondProps);
-        expect(nextProps).toEqual({...finalProps, ...secondProps});
+        expect(nextProps).toEqual({ ...finalProps, ...secondProps });
     });
 
     it('handles props changed and state change and skips unnecessary mapDispatchToProps call', () => {
@@ -186,7 +186,7 @@ describe('selectorFactory', () => {
         );
 
         selector(realm, firstProps);
-        query1.triggerListeners({insertions: [null]});
+        query1.triggerListeners({ insertions: [null] });
         const nextProps = selector(realm, secondProps);
         expect(areQueryPropsEqual.mock.calls.length).toBe(0);
         expect(areOwnPropsEqual.mock.calls.length).toBe(1);
@@ -196,7 +196,7 @@ describe('selectorFactory', () => {
         expect(mapDispatchToProps.mock.calls.length).toBe(1);
         expect(mergeProps.mock.calls.length).toBe(2);
 
-        expect(nextProps).toEqual({...finalProps, ...secondProps});
+        expect(nextProps).toEqual({ ...finalProps, ...secondProps });
     });
 
     it('handles props changed', () => {
@@ -223,7 +223,7 @@ describe('selectorFactory', () => {
         expect(mapDispatchToProps.mock.calls.length).toBe(2);
         expect(mergeProps.mock.calls.length).toBe(2);
 
-        expect(nextProps).toEqual({...finalProps, ...secondProps});
+        expect(nextProps).toEqual({ ...finalProps, ...secondProps });
     });
 
     it('handles props changed but skips unnecessary mapQueriestoProps and mapDispatchToProps', () => {
@@ -251,7 +251,7 @@ describe('selectorFactory', () => {
         expect(mapDispatchToProps.mock.calls.length).toBe(1);
         expect(mergeProps.mock.calls.length).toBe(2);
 
-        expect(nextProps).toEqual({...finalProps, ...secondProps});
+        expect(nextProps).toEqual({ ...finalProps, ...secondProps });
     });
 
     it('triggers state change if queries changed', () => {
@@ -283,7 +283,7 @@ describe('selectorFactory', () => {
         expect(mergeProps.mock.calls[1][0]).toEqual(queryProps);
         expect(mergeProps.mock.calls[1][1]).toBe(dispatchProps);
         expect(mergeProps.mock.calls[1][2]).toBe(secondProps);
-        expect(nextProps).toEqual({...finalProps, ...secondProps});
+        expect(nextProps).toEqual({ ...finalProps, ...secondProps });
     });
 
     it('handles state changes', () => {
@@ -300,7 +300,7 @@ describe('selectorFactory', () => {
         );
 
         selector(realm, firstProps);
-        query1.triggerListeners({insertions: [null]});
+        query1.triggerListeners({ insertions: [null] });
         const nextProps = selector(realm, firstProps);
         expect(areQueryPropsEqual.mock.calls.length).toBe(1);
         expect(areOwnPropsEqual.mock.calls.length).toBe(1);
@@ -309,7 +309,7 @@ describe('selectorFactory', () => {
         expect(mapQueriesToProps.mock.calls.length).toBe(2);
         expect(mapDispatchToProps.mock.calls.length).toBe(1);
         expect(mergeProps.mock.calls.length).toBe(2);
-        expect(nextProps).toEqual({...finalProps, ...firstProps});
+        expect(nextProps).toEqual({ ...finalProps, ...firstProps });
     });
 
     it('handles state changes but skips unnecessary mergeProps calls', () => {
@@ -327,7 +327,7 @@ describe('selectorFactory', () => {
         );
 
         selector(realm, firstProps);
-        query1.triggerListeners({insertions: [null]});
+        query1.triggerListeners({ insertions: [null] });
         const nextProps = selector(realm, firstProps);
         expect(areQueryPropsEqual.mock.calls.length).toBe(1);
         expect(areOwnPropsEqual.mock.calls.length).toBe(1);
@@ -336,6 +336,6 @@ describe('selectorFactory', () => {
         expect(mapQueriesToProps.mock.calls.length).toBe(2);
         expect(mapDispatchToProps.mock.calls.length).toBe(1);
         expect(mergeProps.mock.calls.length).toBe(1);
-        expect(nextProps).toEqual({...finalProps, ...firstProps});
+        expect(nextProps).toEqual({ ...finalProps, ...firstProps });
     });
 });
